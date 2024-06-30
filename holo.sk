@@ -1,0 +1,37 @@
+options:
+    red: <##fa9189>
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##d6f6ff>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+
+on load:
+    execute console command "bc Reloaded holo.sk"
+
+command /holo [<string>] [<string>]:
+    aliases: hologram
+    trigger:
+        if player is not op:
+            send "{@red}ERROR: Insufficient Permissions!"
+        else:
+            if arg-1 is "new":
+                set {_holo} to formatted arg-2
+                spawn an armor stand 1 block below the player with nbt from "{NoGravity:1b, Invisible:1b}"
+                set the display name of last spawned armor stand to {_holo}
+            if arg-1 is "set":
+                set {_holo} to formatted arg-2
+                set the display name of target armor stand to {_holo}
+            if arg-1 is "wipe":
+                loop all armor stands in radius 3 around the player:
+                    kill loop-armor stand
+            if arg-1 is "remove":
+                kill target armor stand
+
+on tab complete of "/holo":
+    set tab completions for position 1 to "new" and "set" and "wipe" and "remove"
+    if tab arg-1 is "set":
+        set {_A} to the display name of target armor stand
+        set tab completions for position 2 to unformatted {_A}

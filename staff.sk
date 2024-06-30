@@ -1,0 +1,1049 @@
+options:
+    ip: <##b3f5bc>&l&oR<##aff1b8>&l&oe<##abeeb4>&l&ol<##a7eaaf>&l&oa<##a4e7ab>&l&ox<##a0e3a7>&l&oi<##9ce0a3>&l&on<##98dc9e>&l&og<##94d99a>&l&oG<##90d596>&l&oe<##8cd292>&l&on<##89ce8e>&l&os<##85ca89>&l&o.<##81c785>&l&om<##7dc381>&l&oi<##79c07d>&l&on<##75bc78>&l&oe<##71b974>&l&oh<##6db570>&l&ou<##6ab26c>&l&ot<##66ae67>&l&o.<##62ab63>&l&og<##5ea75f>&l&og
+    start:<##B3F5BC>
+    end: <##5EA75F>
+    miningreborn: <##B3F5BC>&lM<##ABEEB4>&lI<##A4E7AB>&lN<##9CE0A3>&lI<##94D99A>&lN<##8CD292>&lG <##85CA89>&lR<##7DC381>&lE<##75BC78>&lB<##6DB570>&lO<##66AE67>&lR<##5EA75F>&lN
+    red: <##fa9189>
+    red2: &x&f&a&9&1&8&9
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##d6f6ff>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+    staffColorMain: <##d6f6ff>
+    staffColorSub: <##d6f6ff>
+    publicColor: <##b3f5bc>
+    discordlink: discord.gg/invite 
+    noPerms: Insufficient Permissions!
+    errorColor: <##fa9189>
+    gray: <##ebebeb>
+    prefix: <##ebebeb>[<##b3f5bc>⚜<##ebebeb>]
+    coal: <##3f3f3f>
+    copper: <##bc6849>
+    lapis: <##3361C1>
+    redstone: <##BD0A02>
+    gold: <##DEA71F>
+    diamond: <##8FFFEB>
+    emerald: <##2CD865>
+    crystal: <##B48DF3>
+
+
+on load:
+    wait 1 second
+    execute console command "alert Reloaded staff.sk"
+    set {tabOrder} to objective with id "1" with criteria "dummy" named "TabOrder" in display slot player_list
+    set {team::a} to team named "a-team"
+    set {team::b} to team named "b-team"
+    set {team::c} to team named "c-team"
+    set {team::d} to team named "d-team"
+    set {team::e} to team named "e-team"
+    set {team::f} to team named "f-team"
+    set {team::g} to team named "g-team"
+    set {team::h} to team named "h-team"
+    set {team::i} to team named "i-team"
+    set {team::j} to team named "j-team"
+    set {team::k} to team named "k-team"
+    set {team::l} to team named "l-team"
+    set {team::m} to team named "m-team"
+    set {team::n} to team named "n-team"
+    set {team::o} to team named "o-team"
+
+
+command /clearchat [<string>]:
+    aliases: cc
+    permission: staff+.staff
+    trigger:
+        loop 500 times:
+            broadcast "&c"
+            broadcast "&f"
+        wait 1 tick
+        if arg-1 is "-s" or "-silent":
+            execute console command "alert The chat has been cleared."
+            send "&8[%{playerData::%{_u}%::rankColor}%&o%player%&f: cleared the chat&8]" to all players where [input have permission "staff+.staff"]
+            stop
+        execute console command "alert %player% cleared the chat"
+on join:
+    if {serverData::maintenance} is true:
+        if {serverData::maintenanceList::*} contains "%player%":
+            stop
+        else:
+            kick player due to "{@publicColor}&lServer currently down for maintenance - {@discordlink}"
+
+on death of player:
+    if attacker is a player:
+        if projectile is set:
+            if victim is player:
+                add 1 to {playerData::%attacker's uuid%::kills}
+                add 1 to {playerData::%victim's uuid%::deaths}
+                set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was shot by {@red}%attacker%!"
+                stop
+    if attacker is not a player:
+        if attacker is set:
+            if victim is player:
+                add 1 to {playerData::%victim's uuid%::deaths}
+                set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was slain by {@red}%attacker%!"
+                stop
+    if attacker is a player:
+        if attacker is set:
+            if victim is player:
+                add 1 to {playerData::%victim's uuid%::deaths}
+                add 1 to {playerData::%attacker's uuid%::kills}
+                set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was killed by {@red}%attacker%!"
+                stop
+    if damage was caused by potion:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was killed by magic."
+            stop
+    if damage was caused by fall:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7tried the leap of faith."
+            stop
+    if damage was caused by lava:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7tried to swim in lava."
+            stop
+    if damage was caused by burning:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7burnt to death."
+            stop
+    if damage was caused by drown:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7sunk."
+            stop
+    if damage was caused by starvation:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7starved."
+            stop
+    if damage was caused by lightning:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was struck by lightning."
+            stop
+    if damage was caused by block explosion:
+        if victim is player:
+            add 1 to {playerData::%victim's uuid%::deaths}
+            set the death message to "&8[{@red}⚔&8] {@red}%victim% &7was blown to bits."
+            stop
+    set the death message to "&8[{@red}⚔&8] {@red}%victim% &7died."
+    add 1 to {playerData::%victim's uuid%::deaths}
+
+
+command /maintenance [<string>] [<string>]:
+    permission: staff+.admin
+    trigger:
+        if arg-1 is not set:
+            send "{@prefix} &FCorrect usage:"
+            send "{@prefix} &f/maintenance [start | stop | add | remove] [player]"
+            stop
+        if arg-1 = "start":
+            set {serverData::maintenance} to true
+            execute console command "alert Server going down for maintenance, join the discord to be updated!"
+            execute console command "alert Discord: {@discordlink}"
+            loop all players:
+                if {serverData::maintenanceList::*} does not contain loop-player:
+                    kick loop-player due to "{@prefix} &fServer currently down for maintenance - {@discordlink}"
+            stop
+        if arg-1 = "stop":
+            set {serverData::maintenance} to false
+            execute console command "alert Server is no longer under maintenance"
+            stop
+        if arg-2 is not set:
+            send "{@prefix} &fCorrect usage:"
+            send "{@prefix} &f/maintenance [start | stop | add | remove] [player]"
+            stop
+        if arg-1 = "add":
+            add arg-2 to {serverData::maintenanceList::*}
+            stop
+        if arg-1 = "remove":
+            remove arg-2 from {serverData::maintenanceList::*}
+            stop
+on join:
+    if {vanish::%player's uuid%} is true:
+        set join message to ""
+        send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: joined silently&8]" to all players where [input have permission "staff+.mod"]
+        stop
+    if {opvanish::%player's uuid%} is true:
+        set join message to ""
+        stop
+    if {playerData::%player's uuid%::first} is not set:
+        add 1 to {serverData::uniqueJoins}
+        set join message to "&8[{@publicColor}+&8] &7%player% for the first time! {@publicColor}##%{serverData::uniqueJoins}%"
+        set {playerData::%player's uuid%::first} to true
+        stop
+    set join message to "&8[{@publicColor}+&8] &7%player%"
+
+on quit:
+    if {vanish::%player's uuid%} is true:
+        set quit message to ""
+        send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: left silently&8]" to all players where [input have permission "staff+.mod"]
+        stop
+    else if {opvanish::%player's uuid%} is true:
+        set quit message to ""
+        stop
+    set quit message to "&8[{@red}-&8] &7%player%"
+
+command /tp [<player>] [<player>]:
+    aliases: teleport
+    trigger:
+        if sender does not have permission "staff+.staff":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                if arg-2 is set:
+                    teleport arg-1 to arg-2
+                    send "&7Teleporting %arg-1% &7to %arg-2%" to player
+                    send "&7You have been teleported to %arg-2%" to arg-1
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: teleported %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1% &7to %{playerData::%arg-2's uuid%::rankColor}%&o%arg-2%&8]" to all players where [input have permission "staff+.staff"]
+                else:
+                    teleport player to arg-1
+                    send "&7Teleporting you to %arg-1%" to player
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: teleported to %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&8]" to all players where [input have permission "staff+.staff"]
+            else:
+                send "{@prefix} &fCorrect usage:"
+                send "{@prefix} &f/teleport [player] [player]"
+                stop
+
+
+command /gms [<player>]:
+    trigger:
+        if sender does not have permission "staff+.staff":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                set the gamemode of arg-1 to survival
+                send "&7You set %arg-1%&7's gamemode to survival!" to sender
+                send "&7Your gamemode was set to survival!" to arg-1
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's gamemode to survival&8]" to all players where [input have permission "staff+.staff"]
+            else:
+                set sender's gamemode to survival
+                send "&7Your gamemode was set to survival!" to sender
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their gamemode to survival&8]" to all players where [input have permission "staff+.staff"]
+
+command /gmc [<player>]:
+    trigger:
+        if sender does not have permission "staff+.admin":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                set the gamemode of arg-1 to creative
+                send "&7You set %arg-1%&7's gamemode to creative!" to sender
+                send "&7Your gamemode was set to creative!" to arg-1
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's gamemode to creative&8]" to all players where [input have permission "staff+.admin"]
+            else:
+                set sender's gamemode to creative
+                send "&7Your gamemode was set to creative!" to sender
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their gamemode to creative&8]" to all players where [input have permission "staff+.admin"]
+
+command /gmsp [<player>]:
+    trigger:
+        if sender does not have permission "staff+.mod":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                set the gamemode of arg-1 to spectator
+                send "&7You set %arg-1%&7's gamemode to spectator!" to sender
+                send "&7Your gamemode was set to spectator!" to arg-1
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's gamemode to spectator&8]" to all players where [input have permission "staff+.mod"]
+            else:
+                set sender's gamemode to spectator
+                send "&7Your gamemode was set to spectator!" to sender
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their gamemode to spectator&8]" to all players where [input have permission "staff+.mod"]
+
+command /gma [<player>]:
+    trigger:
+        if sender does not have permission "staff+.staff":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                set the gamemode of arg-1 to adventure
+                send "&7You set %arg-1%&7's gamemode to adventure!" to sender
+                send "&7Your gamemode was set to adventure!" to arg-1
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's gamemode to adventure&8]" to all players where [input have permission "staff+.mod"]
+            else:
+                set sender's gamemode to adventure
+                send "&7Your gamemode was set to adventure!" to sender
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their gamemode to adventure&8]" to all players where [input have permission "staff+.mod"]
+
+command /cheater <string> <player>:
+    trigger:
+        if arg-1 is "rotate" or "ka":
+            set {_x} to the x position of arg-2
+            set {_y} to the y position of arg-2
+            set {_z} to the z position of arg-2
+            set {_world} to the world of arg-2
+            set {_pitch} to a random integer from -180 to 180
+            set {_yaw} to a random integer from -90 to 90
+            teleport arg-2 to location({_x}, {_y}, {_z}, {_world}, {_pitch}, {_yaw})
+        if arg-1 is "push" or "antikb":
+            push arg-2 backwards with speed 2.5
+
+command /fly [<player>]:
+    trigger:
+        if sender does not have permission "staff+.mod":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is set:
+                if the fly state of arg-1 is false:
+                    set the fly state of arg-1 to true
+                    send "&7You set %arg-1%&7's fly state to true!" to sender
+                    send "&7Your fly state was set to true!" to arg-1
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's fly state to true&8]" to all players where [input have permission "staff+.staff"]
+                    stop
+                else:
+                    set the fly state of arg-1 to false
+                    send "&7You set %arg-1%&7's fly state to false!" to sender
+                    send "&7Your fly state was set to false!" to arg-1
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's fly state to false&8]" to all players where [input have permission "staff+.staff"]
+                    stop
+            else:
+                if sender's fly state is false:
+                    set sender's fly state to true
+                    send "&7Your fly state was set to true!" to sender
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their fly state to true&8]" to all players where [input have permission "staff+.staff"]
+                    stop
+                else:
+                    set sender's fly state to false
+                    send "&7Your fly state was set to false!" to sender
+                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set their fly state to false&8]" to all players where [input have permission "staff+.staff"]
+                    stop
+
+command /staffchat [<string>]:
+    aliases: sc
+    trigger:
+        if sender does not have permission "staff+.staff":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is not set:
+                if {sc::%player%} is set:
+                    delete {sc::%player%}
+                    send "{@prefix} {@red}You untoggled Staffchat!"
+                    stop
+                else:
+                    set {sc::%player%} to 1
+                    send "{@prefix} {@green}You toggled Staffchat!"
+                    stop
+            else:
+                if sender is a player:
+                    send "{@prefix} %{playerData::%Player's uuid%::rank}%{@staffColorMain}%player%{@staffColorMain}: %arg-1%" to all players where [input have permission "staff+.staff"]
+                else:
+                    send "{@prefix} {@staffColorMain}Console{@staffColorMain}: %arg-1%" to all players where [input have permission "staff+.staff"]
+
+command /adminchat [<string>]:
+    aliases: ac
+    trigger:
+        if sender does not have permission "staff+.admin":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if arg-1 is not set:
+                if {ac::%player%} is set:
+                    delete {ac::%player%}
+                    send "{@prefix} {@red}You untoggled Admin Chat!"
+                    stop
+                else:
+                    set {ac::%player%} to 1
+                    send "{@prefix} {@green}You toggled Admin Chat!"
+                    stop
+            else:
+                if sender is a player:
+                    send "{@prefix} %{playerData::%Player's uuid%::rank}%{@staffColorMain}&l%player%{@staffColorMain}&l: %arg-1%" to all players where [input have permission "staff+.admin"]
+                else:
+                    send "{@prefix} Console{@staffColorMain}&l: %arg-1%" to all players where [input have permission "staff+.admin"]
+command /opvanish:
+    aliases: opv
+    trigger:
+        if player is op:
+            opvanish(player)
+        else:
+            send "{@errorColor}ERROR: {@noPerms}"
+
+command /dupeip <player>:
+    aliases: alts 
+    trigger:
+        if sender has permission "staff+.mod":
+            set {_ip} to ip of arg-1
+            send "{@red}Online Alts of %arg-1%:"
+            loop all players:
+                if loop-player is not arg-1:
+                    if ip of loop-player = {_ip}:
+                        send "{@red}- {@green}%loop-player%"
+        else:
+            send "{@errorColor}ERROR: {@noPerms}"
+on server list ping:
+    loop all players:
+        hide {opvanish::%loop-player's uuid%} from the server list
+        hide {vanish::%loop-player's uuid%} from the server list
+
+on join:
+    while player is online:
+        if {opvanish::%player's uuid%} is true:
+            send action bar "&7You are currently {@red}&lOP-VANISHED" to player
+        if {vanish::%player's uuid%} is true:
+            send action bar "&7You are currently {@red}&lVANISHED" to player
+        if gamemode of player is survival:
+            set {_y} to the y coordinate of player
+            if {_y} < 40:
+                kill player
+        wait 2 seconds
+        set {_uuid} to player's uuid
+        if player does not have permission "staff+.owner":
+            if player does not have permission "staff+.admin":
+                if player does not have permission "staff+.srmod":
+                    if player does not have permission "staff+.mod":
+                        if player does not have permission "staff+.jrmod":
+                            if player does not have permission "staff+.crystal":
+                                if player does not have permission "staff+.diamond":
+                                    if player does not have permission "staff+.emerald":
+                                        if player does not have permission "staff+.gold":
+                                            if player does not have permission "staff+.redstone":
+                                                if player does not have permission "staff+.lapis":
+                                                    if player does not have permission "staff+.iron":
+                                                        if player does not have permission "staff+.copper":
+                                                            if player does not have permission "staff+.coal":
+                                                                set {playerData::%player's uuid%::rank} to "&7&lSTONE &7"
+                                                                set {playerData::%player's uuid%::rankColor} to "&7"
+                                                                set score of player for {tabOrder} to 15
+                                                                add player to team named "o-team"
+                                                            else:
+                                                                set {playerData::%player's uuid%::rank} to "{@coal}&lCOAL &7"
+                                                                set {playerData::%player's uuid%::rankColor} to "{@coal}"
+                                                                set score of player for {tabOrder} to 14
+                                                                add player to team named "n-team"
+                                                        else:
+                                                            set {playerData::%player's uuid%::rank} to "{@copper}&lCOPPER &7"
+                                                            set {playerData::%player's uuid%::rankColor} to "{@copper}"
+                                                            set score of player for {tabOrder} to 13
+                                                            add player to team named "m-team"
+                                                    else:
+                                                        set {playerData::%player's uuid%::rank} to "&f&lIRON &f"
+                                                        set {playerData::%player's uuid%::rankColor} to "&f"
+                                                        set score of player for {tabOrder} to 12
+                                                        add player to team named "l-team"
+                                                else:
+                                                    set {playerData::%player's uuid%::rank} to "{@lapis}&lLAPIS &f"
+                                                    set {playerData::%player's uuid%::rankColor} to "{@lapis}"
+                                                    set score of player for {tabOrder} to 11
+                                                    add player to team named "k-team"
+                                            else:
+                                                set {playerData::%player's uuid%::rank} to "{@redstone}&lREDSTONE &f"
+                                                set {playerData::%player's uuid%::rankColor} to "{@redstone}"
+                                                set score of player for {tabOrder} to 10
+                                                add player to team named "j-team"
+                                        else:
+                                            set {playerData::%player's uuid%::rank} to "{@gold}&lGOLD &f"
+                                            set {playerData::%player's uuid%::rankColor} to "{@gold}"
+                                            set score of player for {tabOrder} to 9
+                                            add player to team named "i-team"
+                                    else:
+                                        set {playerData::%player's uuid%::rank} to "{@emerald}&lEMERALD &f"
+                                        set {playerData::%player's uuid%::rankColor} to "{@emerald}"
+                                        set score of player for {tabOrder} to 8
+                                        add player to team named "h-team"
+                                else:
+                                    set {playerData::%player's uuid%::rank} to "{@diamond}&lDIAMOND &f"
+                                    set {playerData::%player's uuid%::rankColor} to "{@diamond}"
+                                    set score of player for {tabOrder} to 7
+                                    add player to team named "g-team"
+                            else:
+                                set {playerData::%player's uuid%::rank} to "{@crystal}&lCRYSTAL &f"
+                                set {playerData::%player's uuid%::rankColor} to "{@crystal}"
+                                set score of player for {tabOrder} to 6
+                                add player to team named "f-team"
+                        else:
+                            set {playerData::%player's uuid%::rank} to "&3&lJR.MOD &f"
+                            set {playerData::%player's uuid%::rankColor} to "&3"
+                            set score of player for {tabOrder} to 5
+                            add player to team named "e-team"
+                    else:
+                        set {playerData::%player's uuid%::rank} to "&2&lMOD &f"
+                        set {playerData::%player's uuid%::rankColor} to "&2"
+                        set score of player for {tabOrder} to 4
+                        add player to team named "d-team"
+                else:
+                    set {playerData::%player's uuid%::rank} to "&5&lSR.MOD &f"
+                    set {playerData::%player's uuid%::rankColor} to "&5"
+                    set score of player for {tabOrder} to 3
+                    add player to team named "c-team"
+            else:
+                set {playerData::%player's uuid%::rank} to "&c&lADMIN &f"
+                set {playerData::%player's uuid%::rankColor} to "&c"
+                set score of player for {tabOrder} to 2
+                add player to team named "b-team"
+        else:
+            set {playerData::%player's uuid%::rank} to "&4&lOWNER &f"
+            set {playerData::%player's uuid%::rankColor} to "&4"
+            set score of player for {tabOrder} to 1
+            add player to team named "a-team"
+        toggle player's scoreboard on
+        set title of player's scoreboard to "{@green}--- {@miningreborn} {@green}---"
+        set line 12 of player's scoreboard to ""
+        set line 11 of player's scoreboard to "<##b3f5bc>&nP<##abedb3>&nl<##a2e5a9>&na<##9adea0>&ny<##91d697>&ne<##89ce8e>&nr <##80c684>&nI<##78be7b>&nn<##6fb772>&nf<##67af68>&no<##5ea75f>&n:"
+        set line 10 of player's scoreboard to "<##b3f5bc>- <##a7eaaf>P<##9bdfa1>l<##8fd494>a<##82c887>y<##76bd7a>e<##6ab26c>r<##5ea75f>: {@red}%player%"
+        set line 9 of player's scoreboard to "<##b3f5bc>- <##a2e5a9>R<##91d697>a<##80c684>n<##6fb772>k<##5ea75f>: %{playerData::%player's uuid%::rank}%"
+        set line 8 of player's scoreboard to ""
+        set line 7 of player's scoreboard to "<##b3f5bc>&nS<##a2e5a9>&nt<##91d697>&na<##80c684>&nt<##6fb772>&ns<##5ea75f>&n:"
+        set line 6 of player's scoreboard to "<##b3f5bc>- <##a5e8ad>M<##97db9d>o<##89ce8e>n<##7ac17e>e<##6cb46f>y<##5ea75f>: {@red}%coinsParse({playerData::%player's uuid%::coins})%"
+        set line 3 of player's scoreboard to "<##b3f5bc>- <##a5e8ad>L<##97db9d>e<##89ce8e>v<##7ac17e>e<##6cb46f>l<##5ea75f>: %levelAndExp(player)%"
+        set line 2 of player's scoreboard to "<##b3f5bc>- <##a5e8ad>M<##97db9d>u<##89ce8e>l<##7ac17e>t<##6cb46f>i<##5ea75f>: {@red}%{playerData::%player's uuid%::multiplier}%"
+        set player's tablist header to "SERVER"
+        set player's tablist footer to "SERVER"
+        set player's tablist name to "%{playerData::%player's uuid%::rank}% %player%"
+        wait 3 seconds
+
+
+
+function opvanish(p: player):
+    set {_u} to the uuid of {_p}
+    if {opvanish::%{_u}%} is not set:
+        set {opvanish::%{_u}%} to false
+    if {opvanish::%{_u}%} is false:
+        set {opvanish::%{_u}%} to true
+        send "{@prefix} {@green}You op-vanished!" to {_p}
+        broadcast "&8[{@red}-&8] &7%{_p}%"
+        hide {_p}
+        loop all players:
+            if loop-player is op:
+                if loop-player is not {_p}:
+                    send "&8[%{playerData::%{_u}%::rankColor}%&o%{_p}%&7: op-vanished&8]" to loop-player
+                reveal {_p} to loop-player
+        set the fly state of {_p} to true
+    else:
+        set {opvanish::%{_u}%} to false
+        loop all players:
+            if loop-player is op:
+                if loop-player is not {_p}:
+                    send "&8[%{playerData::%{_u}%::rankColor}%&o%{_p}%&7: op-unvanished&8]" to loop-player
+        if the gamemode of {_p} is survival:
+            set the fly state of {_p} to false
+        send "{@prefix} {@red}You op-unvanished!" to {_p}
+        broadcast "&8[{@green}+&8] &7%{_p}%"
+        reveal {_p}
+
+command /vanish:
+    aliases: v
+    trigger:
+        if player has permission "staff+.staff":
+            vanish(player)
+        else:
+            send "{@errorColor}ERROR: {@noPerms}" to player
+
+        
+on join:
+    loop all players:
+        if {vanish::%player's uuid%} is true:
+            if loop-player does not have permission "staff+.staff":
+                hide player from loop-player
+        if {opvanish::%player's uuid%} is true:
+            if loop-player is not op:
+                hide player from loop-player
+        if {vanish::%loop-player's uuid%} is true:
+            if player does not have permission "staff+.staff":
+                hide loop-player from player
+        if {opvanish::%loop-player's uuid%} is true:
+            if player is not op:
+                hide loop-player from player
+
+function vanish(p: player):
+    set {_u} to the uuid of {_p}
+    if {opvanish::%{_u}%} is true:
+        send "{@prefix} {@red}You are currently {@red}&lOP-VANISHED {@red}and cannot unvanish, use /opv (if you want the items type /modmenu)" to {_p}
+        stop
+    if {vanish::%{_u}%} is not set:
+        set {vanish::%{_u}%} to false
+    if {vanish::%{_u}%} is false:
+        set {vanish::%{_u}%} to true
+        send "{@prefix} {@green}You vanished!" to {_p}
+        broadcast "&8[{@red}-&8] &7%{_p}%"
+        hide {_p}
+        loop all players:
+            if loop-player has permission "staff+.staff":
+                if loop-player is not {_p}:
+                    send "&8[%{playerData::%{_u}%::rankColor}%&o%{_p}%&7: vanished&8]" to loop-player
+                reveal {_p} to loop-player
+        loop all items in the inventory of {_p}:
+            add loop-item to {Inventory::%{_u}%::inventory::*}
+        clear the inventory of {_p}
+        set the fly state of {_p} to true
+        set the gamemode of {_p} to creative
+        make {_p} say "/modmenu"
+    else:
+        set {vanish::%{_u}%} to false
+        loop all players:
+            if loop-player has permission "staff+.staff":
+                if loop-player is not {_p}:
+                    send "&8[%{playerData::%{_u}%::rankColor}%&o%{_p}%&7: unvanished&8]" to loop-player
+        send "{@prefix} {@red}You unvanished!" to {_p}
+        broadcast "&8[{@green}+&8] &7%{_p}%"
+        clear the inventory of {_p}
+        give {_p} {Inventory::%{_u}%::inventory::*}
+        delete {Inventory::%{_u}%::inventory::*}
+        set the gamemode of {_p} to survival
+        set the fly state of {_p} to false
+        reveal {_p}
+
+on left click:
+    if {vanish::%player's uuid%} is true:
+        cancel event
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to player
+        stop
+on right click:
+    if {vanish::%player's uuid%} is true:
+        cancel event
+        if player's tool is clock named "&eTeleport to player":
+            teleporter(player)
+            stop
+        if player's tool is diamond axe named "&cPunish player":
+            if target player is set:
+                punishMain(player, target player)
+            else:
+                send "{@red}You need to be looking at someone to do this" to player
+            stop
+        if player's tool is ice named "&bFreeze player":
+            if target player is set:
+                make player say "/freeze %target player%"
+            else:
+                send "{@red}You need to be looking at someone to do this" to player
+            stop
+        if player's tool is feather named "&fFly Feather":
+            push player forwards at speed 0.5
+            stop
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to player
+    
+
+function freeze(p: player):
+    set {_loc} to location of {_p}
+    add {_P} to {frozen::*}
+    send "{@prefix} {@red}You have been frozen!" to {_p}
+    while {true} is true:
+        teleport {_p} to {_loc}
+        send title "{@red}&lYOU HAVE BEEN FROZEN BY STAFF" with subtitle "{@red}&lDO NOT LOG OUT" to {_p} for 5 seconds
+        if {frozen::*} does not contain {_p}:
+            send "{@prefix} {@green}You have been unfrozen!" to {_p}
+            exit loop
+        wait 5 ticks
+    remove {_p} from {frozen::*}
+
+on quit:
+    if {frozen::*} contains player:
+        execute console command "tempban %player% 30d Logging While Frozen"
+        remove player from {frozen::*}
+command /freeze <player>:
+    cooldown: 1s
+    trigger:
+        send "{@red}This command is temporarily disabled."
+
+
+#        if sender does not have permission "staff+.mod":
+#            send "{@red}ERROR: {@noPerms}"
+#            stop
+#        else:
+#            if arg-1 is op:
+#                send "{@red}You cannot freeze this person as they are an administrator"
+#                stop
+#            else:
+#                if {frozen::*} contains arg-1:
+#                    remove arg-1 from {frozen::*}
+#                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: unfroze %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&8]" to all players where [input have permission "staff+.mod"]
+#                    stop
+#                else:
+#                    freeze(arg-1)
+#                    send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: froze %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&8]" to all players where [input have permission "staff+.mod"]
+#                    stop
+
+function teleporter(p: player):
+    set {_u} to the uuid of {_p}
+    create a gui with virtual chest inventory with 3 rows named "&eTeleport to a player"
+    open last gui for {_p}
+    edit gui last gui: 
+        loop all players:
+            set {_a} to the head of loop-player named "%{playerData::%loop-player's uuid%::rankColor}%%loop-player%"
+            set {_b} to loop-player
+            make next gui with {_a}:
+                make {_p} say "/tp %{_b}%"
+                close the inventory of {_p}
+
+function punishMain(p: player, targ: player):
+    create a gui with virtual hopper inventory with 1 rows named "{@green}Punish %{_targ}%"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 10 times:
+            make next gui with light gray stained glass pane named "&f"
+        make gui 1 with music disc named "{@red}Cheating":
+            if {_p} does not have permission "staff+.mod":
+                close the inventory of {_p}
+                send "{@red}ERROR: {@noPerms}" to {_p}
+                stop
+            punishCheating({_p}, {_targ})
+        make gui 3 with painting named "{@red}Chat":
+            punishChat({_p}, {_targ})
+
+function punishCheating(p: player, targ: player):
+    delete {reason::%{_p}%::*}
+    create a gui with virtual chest inventory with 3 rows named "{@green}Punish %{_targ}% {@green}for cheating"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 40 times:
+            make next gui with light gray stained glass pane named "&f"
+        make gui 10 with red wool named "{@red}Reach":
+            broadcast "%{reason::%{_p}%::*}%"
+            add "Reach" to {reason::%{_p}%::*}
+            make gui 10 with lime wool named "{@green}Reach" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 11 with red wool named "{@red}Kill Aura":
+            add "Kill Aura" to {reason::%{_p}%::*}
+            make gui 11 with lime wool named "{@green}Kill Aura" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 12 with red wool named "{@red}Anti-KB":
+            add "Anti-KB" to {reason::%{_p}%::*}
+            make gui 12 with lime wool named "{@green}Anti-KB" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 13 with red wool named "{@red}Flight":
+            add "Flight" to {reason::%{_p}%::*}
+            make gui 13 with lime wool named "{@green}Flight" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 14 with red wool named "{@red}Speed":
+            add "Speed" to {reason::%{_p}%::*}
+            make gui 14 with lime wool named "{@green}Speed" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 15 with red wool named "{@red}General Combat Cheats":
+            add "Combat Cheats" to {reason::%{_p}%::*}
+            make gui 15 with lime wool named "{@green}General Combat Cheats" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 16 with red wool named "{@red}General Movement Cheats":
+            add "Movement Cheats" to {reason::%{_p}%::*}
+            make gui 16 with lime wool named "{@green}General Movement Cheats" with lore "&7To deselect press it again":
+                punishCheating({_p}, {_targ})
+        make gui 22 with music disc named "{@red}Punish %{_targ}%":
+            if {reason::%{_p}%::*} is set:
+                make {_p} say "/tempban -s %{_targ}% 7d %{reason::%{_p}%::*}%"
+                delete {reason::%{_p}%::*}
+                close the inventory of {_p}
+                stop
+            else:
+                send "{@red}You must select a reason to punish them."
+
+function punishChat(p: player, targ: player):
+    create a gui with virtual chest inventory with 3 rows named "{@green}Punish %{_targ}% {@green}for chat infractions"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 40 times:
+            make next gui with light gray stained glass pane named "&f"
+        make gui 10 with painting named "{@red}Spam":
+            close the inventory of {_p}
+            make {_p} say "/warn -s %{_targ}% Spam"
+        make gui 11 with painting named "{@red}Slurs (any kind)":
+            close the inventory of {_p}
+            make {_p} say "/tempmute -s %{_targ}% 30d Slurs"
+        make gui 12 with painting named "{@red}Advertising":
+            close the inventory of {_p}
+            make {_p} say "/tempmute -s %{_targ}% 30d Advertising"
+        make gui 13 with painting named "{@red}Encouraging Self Harm":
+            close the inventory of {_p}
+            make {_p} say "/tempmute -s %{_targ}% 30d Encouraging Self Harm"
+        make gui 14 with painting named "{@red}Descrimination":
+            close the inventory of {_p}
+            make {_p} say "/tempmute -s %{_targ}% 14d Descrimination"
+        make gui 15 with painting named "{@red}Filter Bypass":
+            close the inventory of {_p}
+            make {_p} say "/tempmute -s %{_targ}% 7d Filter Bypass"
+        make gui 16 with painting named "{@red}Doxxing":
+            close the inventory of {_p}
+            make {_p} say "/ipban -s %{_targ}%"
+
+command /punish <player>:
+    trigger:
+        if player does not have permission "staff+.staff":
+            send "{@red}ERROR: {@noPerms}" to player
+            stop
+        else:
+            punishMain(player, arg-1)
+on drop:
+    if {vanish::%player's uuid%} is true:
+        cancel event
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to player
+        stop
+on player pickup:
+    if {vanish::%player's uuid%} is true:
+        cancel event
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to player
+        stop
+on damage:
+    if {vanish::%attacker's uuid%} is true:
+        cancel event
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to attacker
+        stop
+on block trample:
+    if {vanish::%player's uuid%} is true:
+        cancel event
+        send action bar "&7You cannot do this as your are {@red}&lVANISHED" to player
+        stop
+command /modmenu:
+    trigger:
+        if player does not have permission "staff+.staff":
+            send "&cYou do not have permission to use this" to player
+            stop
+        if {opvanish::%player's uuid%} is true:
+            set slot 0 of the inventory of player to clock named "&eTeleport to player"
+            set slot 3 of the inventory of player to diamond axe named "&cPunish player"
+            set slot 5 of the inventory of player to ice named "&bFreeze player"
+            set slot 8 of the inventory of player to feather named "&fFly Feather"
+            stop
+        if {vanish::%player's uuid%} is true:
+            set slot 0 of the inventory of player to clock named "&eTeleport to player"
+            set slot 3 of the inventory of player to diamond axe named "&cPunish player"
+            set slot 5 of the inventory of player to ice named "&bFreeze player"
+            set slot 8 of the inventory of player to feather named "&fFly Feather"
+        else:
+            send "{@red}You must be vanished to use this."
+            stop
+
+command /setrank <offline player> <string>:
+    aliases: rankset, rank
+    trigger:
+        if player does not have permission "staff+.admin":
+            send "&cYou do not have permission to use this" to player
+        else:
+            if player does not have permission "staff+.owner":
+                if arg-2 = "owner" or "admin":
+                    send "&cYou cannot use this on that person!" to player
+                    stop
+                if arg-1 is player:
+                    send "&cYou cannot set your own rank!" to player
+                    stop
+                if arg-1 has permission "staff+.admin":
+                    send "&cYou cannot use this on that person!" to player
+                    stop
+            set {_a} to "%arg-2%"
+            if arg-2 = "stone":
+                set {_a} to "default"
+            execute console command "lp user %arg-1% parent set %{_a}%"
+            send "&7You set %arg-1%&7's rank to %{_a}%" to player
+            send "&7Your rank was set to %{_a}%" to arg-1
+            send "&8[%{playerData::%sender's uuid%::rankColor}%&o%sender%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's rank to %{_a}%&8]" to all players where [input have permission "staff+.admin"]
+
+
+command /ec:
+    trigger:
+        if player does not have permission "staff+.iron":
+            send "{@red}ERROR: {@noPerms}" to player
+            stop
+        else:
+            enderchest(player, player)
+
+command /ecsee <player>:
+    trigger:
+        if player does not have permission "staff+.mod":
+            send "{@red}ERROR: {@noPerms}" to player
+            stop
+        else:
+            send "&8[%{playerData::%sender's uuid%::rankColor}%&o%sender%&7: opened %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's enderchest&8]" to all players where [input have permission "staff+.mod"]
+            enderchest(arg-1, player)
+
+command /invsee <player>:
+    trigger:
+        if player does not have permission "staff+.mod":
+            send "{@red}ERROR: {@noPerms}" to player
+            stop
+        else:
+            send "&8[%{playerData::%sender's uuid%::rankColor}%&o%sender%&7: opened %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's inventory&8]" to all players where [input have permission "staff+.mod"]
+            inventory(arg-1, player)
+
+function enderchest(p: player, view: player):
+    open the enderchest of {_p} to {_view}
+
+function inventory(p: player, view: player):
+    open the inventory of {_p} to {_view}
+
+on tab complete of "/setrank":
+    set tab completions for position 2 to "default" and "stone" and "coal" and "copper" and "iron" and "lapis" and "redstone" and "gold" and "diamond" and "emerald" and "crystal" and "jrmod" and "mod" and "srmod"
+
+on chat:
+    set {_message} to formatted "%message%"
+    if {frozen::*} contains player:
+        cancel event
+        send "{@prefix} &2&l[FROZEN] %{playerData::%Player's uuid%::rank}% %player%&f: %{_message}%" to all players where [input have permission "staff+.staff"]
+        stop
+    if {sc::%player%} is set:
+        cancel event
+        send "{@prefix} %{playerData::%Player's uuid%::rank}%{@staffColorMain}%player%{@staffColorMain}: %{_message}%" to all players where [input have permission "staff+.staff"]
+        stop
+    if {ac::%player%} is set:
+        cancel event
+        send "{@prefix} %{playerData::%Player's uuid%::rank}%{@staffColorMain}%player%{@staffColorMain}&l: %{_message}%" to all players where [input have permission "staff+.staff"]
+        stop
+    loop all players:
+        if message contains "@%loop-player%":
+            if {vanish::%loop-player's uuid%} is not true:
+                if {opvanish::%loop-player's uuid%} is not true:
+                    replace all "@%Loop-player%" in {_message} with "<##d1bdff>@%loop-player%"
+                    play sound "block.note_block.pling" with pitch 2 at loop-player
+    if {playerData::%player's uuid%::prestige} > 0:
+        if player has permission "staff+.iron":
+            set the chat format to "&8[{@green}%{playerData::%player's uuid%::prestige}%&8] %{playerData::%Player's uuid%::rank}%%player%&f: %{_message}%"
+        else:
+            set the chat format to "&8[{@green}%{playerData::%player's uuid%::prestige}%&8] %{playerData::%Player's uuid%::rank}%%player%&7: %message%"
+    else:
+        if player has permission "staff+.iron":
+            set the chat format to "%{playerData::%Player's uuid%::rank}%%player%&f: %{_message}%"
+        else:
+            set the chat format to "%{playerData::%Player's uuid%::rank}%%player%&7: %message%"
+
+command /quitnotices:
+    trigger:
+        if player does not have permission "staff+.staff":
+            send "{@errorColor}ERROR: {@noPerms}"
+        else:
+            if {playerData::%player's uuid%::quitNotices} is true:
+                set {playerData::%player's uuid%::quitNotices} to false
+                send "&7You will no longer recieve quit notices."
+                stop
+            else:
+                set {playerData::%player's uuid%::quitNotices} to true
+                send "&7You will now recieve quit notices."
+
+command /broadcast <string>:
+    aliases: alert, bc
+    trigger:
+        if sender has permission "staff+.mod":
+            broadcast ""
+            broadcast "{@green} %arg-1%"
+            broadcast ""
+        else:
+            send "{@errorColor}ERROR: {@noPerms}"
+on chat:
+    loop {serverData::filter::*}:
+        if message contains loop-value:
+            cancel event
+            send "{@prefix} {@red}[FILTER] You cannot send that here" to player
+            send "{@prefix} {@red}[FILTER] %player% {@red}tried to say {@red}'%message%{@red}'" to all players where [input have permission "staff+.staff"]
+    set {_message} to message
+    #alphabet
+    replace all "a" in {_message} with ""
+    replace all "b" in {_message} with ""
+    replace all "c" in {_message} with ""
+    replace all "d" in {_message} with ""
+    replace all "e" in {_message} with ""
+    replace all "f" in {_message} with ""
+    replace all "g" in {_message} with ""
+    replace all "h" in {_message} with ""
+    replace all "i" in {_message} with ""
+    replace all "j" in {_message} with ""
+    replace all "k" in {_message} with ""
+    replace all "l" in {_message} with ""
+    replace all "m" in {_message} with ""
+    replace all "n" in {_message} with ""
+    replace all "o" in {_message} with ""
+    replace all "p" in {_message} with ""
+    replace all "q" in {_message} with ""
+    replace all "r" in {_message} with ""
+    replace all "s" in {_message} with ""
+    replace all "t" in {_message} with ""
+    replace all "u" in {_message} with ""
+    replace all "v" in {_message} with ""
+    replace all "w" in {_message} with ""
+    replace all "x" in {_message} with ""
+    replace all "y" in {_message} with ""
+    replace all "z" in {_message} with ""
+    #numbers
+    replace all "1" in {_message} with ""
+    replace all "2" in {_message} with ""
+    replace all "3" in {_message} with ""
+    replace all "4" in {_message} with ""
+    replace all "5" in {_message} with ""
+    replace all "6" in {_message} with ""
+    replace all "7" in {_message} with ""
+    replace all "8" in {_message} with ""
+    replace all "9" in {_message} with ""
+    replace all "0" in {_message} with ""
+    #symbols
+    replace all "!" in {_message} with ""
+    replace all "@" in {_message} with ""
+    replace all "##" in {_message} with ""
+    replace all "$" in {_message} with ""
+    replace all "%%" in {_message} with ""
+    replace all "^" in {_message} with ""
+    replace all "&" in {_message} with ""
+    replace all "*" in {_message} with ""
+    replace all "(" in {_message} with ""
+    replace all ")" in {_message} with ""
+    replace all "[" in {_message} with ""
+    replace all "]" in {_message} with ""
+    replace all "{" in {_message} with ""
+    replace all "}" in {_message} with ""
+    replace all """" in {_message} with ""
+    replace all "'" in {_message} with ""
+    replace all ";" in {_message} with ""
+    replace all ":" in {_message} with ""
+    replace all "," in {_message} with ""
+    replace all "." in {_message} with ""
+    replace all "/" in {_message} with ""
+    replace all "\" in {_message} with ""
+    replace all "<" in {_message} with ""
+    replace all ">" in {_message} with ""
+    replace all "?" in {_message} with ""
+    replace all "|" in {_message} with ""
+    replace all "-" in {_message} with ""
+    replace all "_" in {_message} with ""
+    replace all "+" in {_message} with ""
+    replace all "=" in {_message} with ""
+    replace all "`" in {_message} with ""
+    replace all "~" in {_message} with ""
+    #last
+    replace all " " in {_message} with ""
+    set {_a} to length of {_message}
+    if {_a} > 0:
+        send "{@prefix} {@red}[ERROR] Your message must contain %{serverData::letters::*}%" to player
+        cancel event
+        stop
+
+command /filter [<text>] [<text>]:
+    permission: staff+.admin
+    trigger:
+        if arg-1 is "add":
+            if arg-2 is set:
+                if {serverData::filter::*} does not contain arg-2:
+                    add arg-2 to {serverData::filter::*}
+                    send "{@staffColorMain}Added %arg-2% {@staffColorMain}to the swear filter."
+                    stop
+                else:
+                    send "{@red}That word, %arg-2%{@red}, is already blocked!"
+                    stop
+            else:
+                send "{@red}Supply a word to filter!"
+                stop
+        if arg-1 is "remove":
+            if arg-2 is set:
+                if {serverData::filter::*} contains arg-2:
+                    remove arg-2 from {serverData::filter::*}
+                    send "{@staffColorMain}Removed %arg-2% {@staffColorMain}from the swear filter."
+                    stop
+                else:
+                    send "{@red}That word, %arg-2%{@red}, is not blocked!"
+                    stop
+            else:
+                send "{@red}Supply a word to unfilter!"
+                stop
+        if arg-1 is "list":
+            send "{@staffColorMain}The filtered words are: {@staffColorSub}%{serverData::filter::*}%"
+            stop
+        else:
+            send "{@red}Unknown argument"
+            stop
+
+on tab complete of "/filter":
+    set tab completions for position 1 to "add" and "remove" and "list"
+
+function basicFilt():
+    set {serverData::filter::*} to "fuck" and "shit" and "heil" and "nig " and "nigg" and "bitch" and "pussy" and "whore" and "slut" and "fag" and "f@g" and "n1g" and "n!g" and "piss" and "retard" and "ass" and "cock" and "cunt" and "bastard" and "dick" and "prick" and "twat" and "wanker" and "kys"
+
+on load:
+    set {serverData::letters::*} to "a" and "b" and "c" and "d" and "e" and "f" and "g" and "h" and "i" and "j" and "k" and "l" and "m" and "n" and "o" and "p" and "q" and "r" and "s" and "t" and "u" and "v" and "w" and "x" and "y" and "z" and "1" and "2" and "3" and "4" and "5" and "6" and "7" and "8" and "9" and "!" and "@" and "##" and "$" and "%%" and "^" and "&" and "*" and "(" and ")" and "[" and "]" and "{" and "}" and """" and "'" and ";" and ":" and "," and "." and "/" and "<" and ">" and "?" and "\" and "/" and "|" and "-" and "_" and "=" and "+" and "`" and "~"
+
+

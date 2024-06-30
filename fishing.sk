@@ -1,0 +1,128 @@
+options:
+    red: <##fa9189>
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##d6f6ff>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+
+on load:
+    execute console command "bc Reloaded fishing.sk"
+
+
+command /fishing:
+    trigger:
+        fishing(player)
+
+
+
+function fishing(p: player):
+    create a gui with virtual chest inventory with 6 rows named "{@green}Fishing Drops! (click to remove)"
+    open last gui for {_p}
+    edit gui last gui:
+        set {_b} to 1
+        loop {fishing::drops::*}:
+            make next gui with loop-value with lore "&7Chance: %{fishing::drops::%{_b}%::chance}%" and "&7Power Needed: %{fishing::drops::%{_b}%::power}%":
+                delete {fishing::drops::%{_b}%::*}
+                delete {fishing::drops::%{_b}%}
+                close the inventory of {_p}
+                send "{@red}Drop Removed!" to player
+            add 1 to {_b}
+        make gui 53 with green stained glass pane named "{@green}Add a drop?" with lore "&7This will add your held item!":
+            set {_a} to the held item of {_p}
+            if {_a} is air:
+                close the inventory of {_p}
+                send "{@red}You must be holding something to do this!"
+                stop
+            addDropAsk({_p}, {_a}, 50, 1)
+
+function addDropAsk(p: player, i: item, chance: number, power: number):
+    create a gui with virtual chest inventory with 5 rows named "{@green}Add a drop, (Chance/Power)"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 55 times:
+            make next gui with light gray stained glass pane named "&f"
+        set {_down} to ({_chance} - 5)
+        set {_up} to ({_chance} + 5)
+        set {_down2} to ({_power} - 1)
+        set {_up2} to ({_power} + 1)
+        make gui 19 with the held item of {_p}
+        make gui 21 with red wool named "{@red}%{_chance}%%%"
+        make gui 23 with red wool named "{@red}%{_power}%"
+        if {_up} is not more than 95:
+            make gui 12 with arrow named "{@red}+5%%":
+                addDropAsk({_p}, {_i}, {_up}, {_power})
+        if {_down} is not less than 5:
+            make gui 30 with arrow named "{@red}-5%%":
+                addDropAsk({_p}, {_i}, {_down}, {_power})
+        if {_up2} is not more than 10:
+            make gui 14 with arrow named "{@red}+1":
+                addDropAsk({_p}, {_i}, {_chance}, {_up2})
+        if {_down2} is not less than 1:
+            make gui 32 with arrow named "{@red}-1":
+                addDropAsk({_p}, {_i}, {_chance}, {_down2})
+        make gui 25 with lime wool named "{@green}Add Drop?":
+            close the inventory of {_p}
+            send "{@green}Added drop to the Fishing List."
+            set {_a} to 1
+            loop {fishing::drops::*}:
+                add 1 to {_a}
+            set {fishing::drops::%{_a}%} to {_i}
+            set {fishing::drops::%{_a}%::power} to {_power}
+            set {fishing::drops::%{_a}%::chance} to {_chance}
+
+command /customfishing <number> <number>:
+    trigger:
+        if player is not op:
+            send "{@red}ERROR: Insufficient permissions"
+        else:
+            set {_a} to the held item of player
+            addDropAsk(player, {_a}, arg-1, arg-2)
+
+on fish:
+    if fishing state is caught fish:
+        set {_a} to 1
+        if "%nbt compound from player's tool%" contains "Power:1":
+            set {_p} to 1
+        if "%nbt compound from player's tool%" contains "Power:2":
+            set {_p} to 2
+        if "%nbt compound from player's tool%" contains "Power:3":
+            set {_p} to 3
+        if "%nbt compound from player's tool%" contains "Power:4":
+            set {_p} to 4
+        if "%nbt compound from player's tool%" contains "Power:5":
+            set {_p} to 5
+        loop (size of {fishing::drops::*}) times:
+            if {fishing::drops::%{_a}%::power} > 0:
+                if {fishing::drops::%{_a}%::power} <= {_p}:
+                    set {_mul} to ({_p} * 1 / 5)
+                    set {_mul} to ({_mul} + 0.8)
+                    set {_chance} to ({fishing::drops::%{_a}%::chance} * {_mul})
+                    chance of {_chance}%:
+                        add {fishing::drops::%{_a}%} to {_rewards::*}
+                        set {_nameofitem} to display name of {fishing::drops::%{_a}%}
+                        if {_chance} > 20:
+                            set {true} to true
+                        else:
+                            if {_chance} > 5:
+                                send "{@green}&lRARE CATCH&r{@green} You found a %{_nameofitem}%" to player
+                            else:
+                                if {_chance} > 1:
+                                    send "{@green}&lEXTRAORDINARY CATCH&r{@green} You found a %{_nameofitem}%" to player
+                                else:
+                                    if {_chance} > 0.1:
+                                        send "{@green}&lPRAY RNGESUS CATCH&r{@green} You found a %{_nameofitem}%" to player
+                                    else:
+                                        if {_chance} < 0.1:
+                                            send "{@green}&lRNGESUS INCARNATE CATCH&r{@green} You found a %{_nameofitem}%" to player
+                        
+            add 1 to {_a}
+        set item of fishing caught entity to air
+        uncancel event
+        loop {_rewards::*}:
+            add 1 to {playerData::%player's uuid%::fishCaught}
+            set {_b} to the name of loop-value
+            drop 1 of loop-value at the player
+        

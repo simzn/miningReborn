@@ -1,0 +1,704 @@
+options:
+    red: <##fa9189>
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##779ecb>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+    rightarrow: →
+
+
+
+on load:
+    execute console command "bc Reloaded main.sk"
+    set {serverData::menu} to empty map named "{@green}Menu" with lore "&7Everything you need" and "&7contained on this" and "&7piece of paper!"
+    enchant {serverData::menu} with unbreaking 1
+    add hide enchants to item flags of {serverData::menu}
+on join:
+    if {playerData::%player's uuid%::prestige} is not set:
+        set {playerData::%player's uuid%::prestige} to 0 
+    if {playerData::%player's uuid%::coins} is not set:
+        set {playerData::%player's uuid%::coins} to 0 
+    if {playerData::%player's uuid%::multiplier} is not set:
+        set {playerData::%player's uuid%::multiplier} to 1
+    if {playerData::%player's uuid%::totalexp} is not set:
+        set {playerData::%player's uuid%::totalexp} to 0
+    if {playerData::%player's uuid%::level} is not set:
+        set {playerData::%player's uuid%::level} to 0
+    if {playerData::%player's uuid%::kills} is not set:
+        set {playerData::%player's uuid%::kills} to 0
+    if {playerData::%player's uuid%::deaths} is not set:
+        set {playerData::%player's uuid%::deaths} to 0
+    if {playerData::%player's uuid%::fishCaught} is not set:
+        set {playerData::%player's uuid%::fishCaught} to 0
+    if {playerData::%player's uuid%::blocksMined} is not set:
+        set {playerData::%player's uuid%::blocksMined} to 0
+
+function roman(number: integer) :: string:
+    set {_result} to ""
+    loop {_number} times:
+        if {_number} is greater than or equal to 1000:
+            set {_result} to concat {_result} with "M"
+            set {_number} to {_number} - 1000
+
+        else if {_number} is greater than or equal to 900:
+            set {_result} to concat {_result} with "CM"
+            set {_number} to {_number} - 900
+
+        else if {_number} is greater than or equal to 500:
+            set {_result} to concat {_result} with "D"
+            set {_number} to {_number} - 500
+
+        else if {_number} is greater than or equal to 400:
+            set {_result} to concat {_result} with "CD"
+            set {_number} to {_number} - 400
+
+        else if {_number} is greater than or equal to 100:
+            set {_result} to concat {_result} with "C"
+            set {_number} to {_number} - 100
+
+        else if {_number} is greater than or equal to 90:
+            set {_result} to concat {_result} with "XC"
+            set {_number} to {_number} - 90
+
+        else if {_number} is greater than or equal to 50:
+            set {_result} to concat {_result} with "L"
+            set {_number} to {_number} - 50
+
+        else if {_number} is greater than or equal to 40:
+            set {_result} to concat {_result} with "XL"
+            set {_number} to {_number} - 40
+
+        else if {_number} is greater than or equal to 10:
+            set {_result} to concat {_result} with "X"
+            set {_number} to {_number} - 10
+
+        else if {_number} is greater than or equal to 9:
+            set {_result} to concat {_result} with "IX"
+            set {_number} to {_number} - 9
+
+        else if {_number} is greater than or equal to 5:
+            set {_result} to concat {_result} with "V"
+            set {_number} to {_number} - 5
+
+        else if {_number} is greater than or equal to 4:
+            set {_result} to concat {_result} with "IV"
+            set {_number} to {_number} - 4
+
+        else:
+            set {_result} to concat {_result} with "I"
+            set {_number} to {_number} - 1
+
+    return {_result}
+command /pv <player>:
+    trigger:
+        create a gui with virtual chest inventory with 4 rows named "{@green}%arg-1%"
+        open last gui for player
+        edit gui last gui:
+            loop 50 times:
+                make next gui with gray stained glass pane named "&f"
+            if the helmet of arg-1 is air:
+                make gui 10 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 10 with the helmet of arg-1
+            if the chestplate of arg-1 is air:
+                make gui 12 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 12 with the chestplate of arg-1
+            if the leggings of arg-1 is air:
+                make gui 14 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 14 with the leggings of arg-1
+            if the boots of arg-1 is air:
+                make gui 16 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 16 with the boots of arg-1
+            if the tool of arg-1 is air:
+                make gui 20 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 20 with the tool of arg-1
+            if the offhand tool of arg-1 is air:
+                make gui 24 with white stained glass pane named "&fEmpty"
+            else:
+                make gui 24 with the offhand tool of arg-1
+            make gui 22 with the skull of arg-1 named "%{playerData::%arg-1's uuid%::rankColor}%%arg-1%" with lore "{@green}Rank: {@red}%{playerData::%arg-1's uuid%::rank}%" and "{@green}Coins: {@red}%{playerData::%arg-1's uuid%::coins}%" and "{@green}Level: {@red}%levelAndExp(arg-1)%" and "{@green}Multiplier: {@red}%{playerData::%arg-1's uuid%::multiplier}%"
+
+on right click on chest or barrel:
+    if player does not have permission "staff+.mod":
+        cancel event
+        send "{@red}ERROR: No Permission!" to player
+    else:
+        stop
+
+
+on right click with empty map:
+    if player's tool is empty map named "{@green}Menu":
+        cancel event
+        mainMenu(player) 
+
+on player drop of a empty map:
+    if event-item is empty map named "{@green}Menu":
+        cancel event
+        mainMenu(player)
+
+command /menu:
+    trigger:
+        mainMenu(player)
+
+function mainMenu(p: player):
+    set {_u} to the uuid of {_p}
+    create a gui with virtual chest inventory with 6 rows named "{@green}Menu"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 55 times:
+            make next gui with gray stained glass pane named "&f"
+        make gui 13 with skull of {_p} named "%{playerData::%{_u}%::rankColor}%%{_p}%" with lore "&7Rank: %{playerData::%{_u}%::rank}%" and "&7Joined: %unix date of {playerData::%{_u}%::firstJoined}%" and "&7Playtime: {@blue}[WIP]"
+        set {_a} to ({playerData::%{_u}%::kills} / {playerData::%{_u}%::deaths})
+        make gui 22 with name tag named "{@green}Statistics" with lore "&f" and "&7&nCombat Stats:" and "&7Kills: &e%{playerData::%{_u}%::kills}%" and "&7Deaths: &e%{playerData::%{_u}%::deaths}%" and "&7KDR: &e%{_a}%" and "&7" and "&7&nMisc. Stats:" and "&7Coins: &e%coinsParse({playerData::%{_u}%::coins})%" and "&7Fish Caught: &e%{playerData::%{_u}%::fishCaught}%" and "&7Blocks Mined: &e%{playerData::%{_u}%::blocksMined}%"
+        make gui 21 with fishing rod named "{@blue}Fishing Guide" with lore "&7View your fishing progress and more!" and "&7" and "&eClick to open the fishing menu!":
+            fishingMenu({_p})
+        make gui 20 with book named "{@green}Skills" with lore "&7View your skills!" and "&7" and "&eClick to open the skills menu!":
+            skillsMenu({_p})
+        make gui 23 with bone named "{@blue}Pets" with lore "&7View your pets!" and "&7" and "&eClick to open the pets menu!":
+            petMenu({_p})
+        make gui 24 with blaze powder named "{@red}Coming Soon!"
+        make gui 30 with ender chest named "{@green}Storage" with lore "&7View your personal storage!" and "&7" and "&eClick to open your ender chest!":
+            open the ender chest of {_p} to {_p}
+        make gui 31 with barrier named "{@red}Close" with lore "&7Tired of looking at this menu?" and "&7" and "&eClick to close the menu!":
+            close the inventory of {_p}
+        make gui 32 with dispenser named "{@green}Warp to Compactor" with lore "&7Tired of running back and forth?" and "&7" and "&eClick here to warp to the Compactor!"
+
+function skillsMenu(p: player):
+    set {_u} to the uuid of {_p}
+    create a gui with virtual chest inventory with 5 rows named "{@green}Skills"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 55 times:
+            make next gui with gray stained glass pane named "&f"
+        make gui 13 with book named "{@green}Skills" with lore "&7View all of your skills. So talented!" and "{@blue}Skill Average: &e"
+        make gui 19 with iron pickaxe named "{@green}Mining"
+
+
+
+
+
+function expCalc(i: integer) :: integer:
+#input level
+    set {_return} to 0
+    set {_int} to {_i}
+    loop {_i} times:
+        set {_a} to {_int}
+        set {_a} to ({_a} * 50)
+        add {_a} to {_return}
+        subtract 1 from {_int}
+    return {_return}
+#output experience needed for that level
+
+function levelCalc(i: integer) :: integer:
+#input experience
+    set {_return} to 0
+    set {_loopval} to 100
+    loop 100 times:
+        if {_i} >= expCalc({_loopval}):
+            exit loop
+        subtract 1 from {_loopval}
+    return {_loopval}
+#output level
+
+function levelAndExp(p: player) :: string:
+    set {_u} to the uuid of {_p}
+    set {_totalexp} to {playerData::%{_u}%::totalexp}
+    set {_lvl} to levelCalc({_totalexp})
+    set {_exp} to abs(expCalc({_lvl}) - {_totalexp})
+    set {_expneeded} to ({_lvl} * 50)
+    set {_return} to "{@green}[{@red}%{_lvl}%{@green}] {@red}%{_exp}%{@green}/{@red}%({_expneeded} + 50)%"
+    return {_return}
+
+function Exp(p: player) :: string:
+    set {_u} to the uuid of {_p}
+    set {_totalexp} to {playerData::%{_u}%::totalexp}
+    set {_lvl} to levelCalc({_totalexp})
+    set {_exp} to abs(expCalc({_lvl}) - {_totalexp})
+    set {_expneeded} to ({_lvl} * 50)
+    set {_return} to "{@green}%{_exp}%{@green}/{@green}%({_expneeded} + 50)%"
+    return {_return}
+
+command /itemgive <string> <integer>:
+    trigger:
+        if player is not op:
+            send "{@red}ERROR: Insufficient Permissions!" to player
+        else:
+            set {_n} to nbt compound from "{Power: %arg-2%}"
+            set {_a} to "%arg-1% pickaxe"
+            set {_b} to {_a} parsed as an item
+            set {_b} to unbreakable {_b}
+            add hide attributes to item flags of {_b}
+            if arg-2 = 1:
+                set {_num} to "I"
+            if arg-2 = 2:
+                set {_num} to "II"
+            if arg-2 = 3:
+                set {_num} to "III"
+            if arg-2 = 4:
+                set {_num} to "IV"
+            if arg-2 = 5:
+                set {_num} to "V"
+            if arg-2 = 6:
+                set {_num} to "VI"
+            set player's tool to {_b} with lore "&7Breaking Power %{_num}%" with nbt {_n}
+
+function coinsParse(i: integer) :: string:
+    if {_i} <= 999:
+        return "¤%{_i}%"
+        stop
+    if {_i} <= 999999:
+        set {_i} to ({_i} / 1000)
+        return "¤%{_i}%k"
+        stop
+    if {_i} <= 999999999:
+        set {_i} to ({_i} / 1000000)
+        return "¤%{_i}%m"
+        stop
+    if {_i} <= 999999999999:
+        set {_i} to ({_i} / 1000000000)
+        return "¤%{_i}%b"
+        stop
+
+
+command /coins [<string>] [<offline player>] [<integer>]:
+    aliases: eco, baledit
+    permission: staff+.admin
+    trigger:
+        if arg-1 is not set:
+            send "{@green}Correct usage:"
+            send "{@green}/coins [give|set|reset] [player] [amount]"
+            stop
+        if arg-2 is not set:
+            send "{@green}Correct usage:"
+            send "{@green}/coins [give|set|reset] [player] [amount]"
+            stop
+        if arg-1 is "reset":
+            set {playerData::%arg-2's uuid%::coins} to 0
+            send "{@green}You reset {@red}%arg-2%{@green}'s balance!" to sender
+            send "{@green}Your balance was reset!" to arg-2
+            send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: reset the balance of %{playerData::%arg-2's uuid%::rankColor}%&o%arg-2%&8]" to all players where [input have permission "staff+.staff"]
+            stop
+        else:
+            if arg-3 is not set:
+                send "{@green}Correct usage:"
+                send "{@green}/coins [give|set|reset] [player] [amount]"
+                stop
+            if arg-1 is "give":
+                add arg-3 to {playerData::%arg-2's uuid%::coins}
+                send "{@green}You gave {@red}%arg-2% %coinsParse(arg-3)%!" to sender
+                send "{@green}You were given {@red}%coinsParse(arg-3)%!" to arg-2
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: added %coinsParse(arg-3)% to the purse of %{playerData::%arg-2's uuid%::rankColor}%&o%arg-2%&8]" to all players where [input have permission "staff+.staff"]
+                stop
+            if arg-1 is "set":
+                set {playerData::%arg-2's uuid%::coins} to arg-3
+                send "{@green}You set {@red}%arg-2%{@green}'s balance to {@red}%coinsParse(arg-3)%!" to sender
+                send "{@green}Your balance was set to {@red}%coinsParse(arg-3)%!" to arg-2
+                send "&8[%{playerData::%player's uuid%::rankColor}%&o%player%&7: set the purse of %{playerData::%arg-2's uuid%::rankColor}%&o%arg-2% &7to %coinsParse(arg-3)%&8]" to all players where [input have permission "staff+.staff"]
+                stop
+
+on tab complete of "/coins" or "/eco" or "/baledit":
+    set tab completions for position 1 to "set" and "give" and "reset"
+    set tab completions for position 3 to "1" and "10" and "100" and "1000" and "10000" and "100000" and "1000000"
+
+on food bar change:
+    cancel event
+
+command /powerSet <integer>:
+    trigger:
+        if player is not op:
+            send "{@red}ERROR: Insufficient Permissions!" to player
+        else:
+            set {_n} to nbt compound from "{Power: %arg-1%}"
+            set {_b} to the tool of player
+            set {_b} to unbreakable {_b}
+            add hide attributes to item flags of {_b}
+            if arg-2 = 1:
+                set {_num} to "I"
+            if arg-2 = 2:
+                set {_num} to "II"
+            if arg-2 = 3:
+                set {_num} to "III"
+            if arg-2 = 4:
+                set {_num} to "IV"
+            if arg-2 = 5:
+                set {_num} to "V"
+            if arg-2 = 6:
+                set {_num} to "VI"
+            set player's tool to {_b} with nbt {_n}
+            send "{@green}Set your tools power to %arg-1%"
+
+on craft:
+    if the gamemode of player is survival:
+        cancel event
+
+
+on first join:
+    wait 1 tick
+    spawn(player)
+    kit(player, "starter")
+    set {playerData::%player's uuid%::firstJoined} to unix timestamp of now
+
+function spawn(p: player):
+    teleport {_p} to location(0.5, 65, 0.5, world "mines")
+
+function kit(p: player, kit: string):
+    if {_kit} is "starter":
+        give {_p} 1 of {serverData::weapons::dagger::old}
+        give {_p} 1 of {items::wooden::pickaxe}
+        give {_p} unbreakable leather cap
+        give {_p} unbreakable leather chestplate
+        give {_p} unbreakable leather leggings
+        give {_p} unbreakable leather boots
+        set slot 8 of the inventory of {_p} to {serverData::menu}
+
+on player portal:
+    cancel event
+
+on damage:
+    if damage cause is suffocation:
+        cancel event
+
+command /spawn:
+    trigger:
+        spawn(player)
+
+
+on right click on sweet berry bush:
+    wait 1 second
+    set the age of event-block to 2
+
+command /setprestige <offline player> <integer>:
+    aliases: prestigeset
+    trigger:
+        if player does not have permission "staff+.admin":
+            send "&cYou do not have permission to use this" to player
+        else:
+            set {playerData::%arg-1's uuid%::prestige} to arg-2
+            set {playerData::%arg-1's uuid%::multiplier} to (arg-2 + 1)
+            send "&7You set %arg-1%&7's prestige to %arg-2%" to player
+            send "&7Your prestige was set to %arg-2%" to arg-1
+            send "&8[%{playerData::%sender's uuid%::rankColor}%&o%sender%&7: set %{playerData::%arg-1's uuid%::rankColor}%&o%arg-1%&7's prestige to {@green}%arg-2%&8]" to all players where [input have permission "staff+.admin"]
+
+command /prestige:
+    trigger:
+        set {_u} to the uuid of the player
+        set {_lvl} to levelCalc({playerData::%{_u}%::totalexp})
+        set {_levelreq} to (50 + 25 * {playerData::%{_u}%::prestige})
+        if {_levelreq} <= {_lvl}:
+            prestigeConfirm(player)
+        else:
+            send "{@red}ERROR: You need to be level %{_levelreq}% to do this!"
+         
+function prestigeConfirm(p: player):
+    set {_u} to the uuid of {_p}
+    create a gui with virtual hopper inventory with 1 rows named "{@green}Are you sure you want to prestige?"
+    open last gui for {_p}
+    edit gui last gui:
+        loop 6 times:
+            make next gui with gray stained glass pane named "&f"
+        make gui 1 with red wool named "{@red}No, Not Right Now" with lore "&7You will continue as you are.":
+            close the inventory of {_p}
+            send "{@green}Prestige Canceled!" to {_p}
+        make gui 3 with lime wool named "{@green}Yes, I am Ready" with lore "&7NOTE: Almost all items will be removed from you.":
+            add 1 to {playerData::%{_u}%::prestige}
+            wipe({_p})
+            broadcast "{@green}&lPRESTIGE! {@red}%{_p}% {@green}prestiged to level {@red}%{playerData::%{_u}%::prestige}%!"
+            add 1 to {playerData::%{_u}%::multiplier}
+            close the inventory of {_p}
+function wipe(p: player):
+    set {_u} to the uuid of {_p}
+    spawn({_p})
+    clear the inventory of {_p}
+    set the gamemode of {_p} to survival
+    set the flight mode of {_p} to false
+    remove all potion effects from {_p}
+    clear the enderchest of {_p}
+    set {playerData::%{_u}%::totalexp} to 0
+    set {playerData::%{_u}%::level} to 0
+    set {playerData::%{_u}%::coins} to 0
+    kit({_p}, "starter")
+
+function toolCheck(p: player) :: string:
+    if the tool of {_p} is a shovel:
+        set {_r} to "shovel"
+        return {_r}
+    if the tool of {_p} is a pickaxe:
+        set {_r} to "pickaxe"
+        return {_r}
+    if the tool of {_p} is a axe:
+        set {_r} to "axe"
+        return {_r}
+    if the tool of {_p} is a hoe:
+        set {_r} to "hoe"
+        return {_r}
+    if the tool of {_p} is a sword:
+        set {_r} to "sword"
+        return {_r}
+    if the tool of {_p} is a fishing rod:
+        set {_r} to "rod"
+        return {_r}
+    if the tool of {_p} is a air:
+        set {_r} to "air"
+        return {_r}
+    return "other"
+
+function addExp(p: player, int: integer):
+    set {_u} to the uuid of {_p}
+    add {_int} to {playerData::%{_u}%::totalexp}
+    set {_lvl} to levelCalc({playerData::%{_u}%::totalexp})
+    if {_lvl} is not {playerData::%{_u}%::level}:
+        if {_lvl} <= 100:
+            send title "{@green}&lLevel Up!" with subtitle "{@green}[{@red}%{playerData::%{_u}%::level}%{@green}] {@rightarrow} [{@red}%{_lvl}%{@green}]" to {_p} for 5 seconds
+            play sound "entity.player.levelup" to {_p}
+            set {playerData::%{_u}%::level} to {_lvl}
+    else:
+        send action bar "{@green}+%{_int}% Exp. (%Exp({_p})%)" to {_p}
+
+
+
+on block break:
+    if the gamemode of player is not creative:
+        cancel event
+        set {_fortune} to the level of fortune of the player's tool
+        set {_drops} to a random integer from 2 to {_fortune}
+        if "%{_fortune}%" is "<none>":
+            set {_drops} to 1
+        set {_multi} to {playerData::%player's uuid%::multiplier}
+        set {_drops} to round({_drops} * {_multi})
+        if "%nbt compound from player's tool%" contains "Power:1":
+            set {_p} to 1
+        if "%nbt compound from player's tool%" contains "Power:2":
+            set {_p} to 2
+        if "%nbt compound from player's tool%" contains "Power:3":
+            set {_p} to 3
+        if "%nbt compound from player's tool%" contains "Power:4":
+            set {_p} to 4
+        if "%nbt compound from player's tool%" contains "Power:5":
+            set {_p} to 5
+        if toolCheck(player) = "pickaxe":
+            if event-block is stone or cobblestone or coal ore or coal block:
+                if {_p} >= 1:
+                    add 1 to {playerData::%player's uuid%::blocksMined}
+                    if event-block is stone or cobblestone:
+                        drop {_drops} of cobblestone with lore "&f&lCOMMON" at event-block
+                        set {_value} to 1
+                        addExp(player, {_drops} * {_value})
+                    if event-block is coal block:
+                        drop round({_drops} / 2) of coal block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 4
+                        addExp(player, {_drops} * {_value})
+                    if event-block is coal ore:
+                        drop {_drops} of coal with lore "&f&lCOMMON" at event-block
+                        set {_value} to 2
+                        addExp(player, {_drops} * {_value})
+                    set event-block to air
+                    stop
+                else:
+                    send "{@red}ERROR: You need to have a pickaxe with breaking power 1 for this ore!" to player
+            if event-block is copper ore or raw copper block or iron ore or raw iron block:
+                if {_p} >= 2:
+                    add 1 to {playerData::%player's uuid%::blocksMined}
+                    if event-block is copper ore:
+                        drop {_drops} of raw copper with lore "&f&lCOMMON" at event-block
+                        set {_value} to 3
+                        addExp(player, {_drops} * {_value})
+                    if event-block is raw copper block:
+                        drop round({_drops} / 2) of raw copper block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 6
+                        addExp(player, {_drops} * {_value})
+                    if event-block is iron ore:
+                        drop {_drops} of raw iron with lore "&f&lCOMMON" at event-block
+                        set {_value} to 4
+                        addExp(player, {_drops} * {_value})
+                    if event-block is raw iron block:
+                        drop round({_drops} / 2) of raw iron block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 8
+                        addExp(player, {_drops} * {_value})
+                    set event-block to air
+                    stop
+                else:
+                    send "{@red}ERROR: You need to have a pickaxe with breaking power 2 for this ore!" to player
+            if event-block is lapis ore or lapis block or redstone ore or redstone block or gold ore or raw gold block:
+                if {_p} >= 3:
+                    add 1 to {playerData::%player's uuid%::blocksMined}
+                    set {_lapis} to a random integer from 4 to 8
+                    set {_redstone} to a random integer from 4 to 5
+                    if event-block is lapis ore:
+                        drop ({_drops} + {_lapis})  of lapis with lore "&f&lCOMMON" at event-block
+                        set {_value} to 5
+                        addExp(player, {_drops} * {_value})
+                    if event-block is lapis block:
+                        drop round({_drops} / 2) of lapis block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 10
+                        addExp(player, {_drops} * {_value})
+                    if event-block is redstone ore:
+                        drop ({_drops} + {_redstone}) of redstone with lore "&f&lCOMMON" at event-block
+                        set {_value} to 10
+                        addExp(player, {_drops} * {_value})
+                    if event-block is redstone block:
+                        drop round({_drops} / 2) of redstone block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 20
+                        addExp(player, {_drops} * {_value})
+                    if event-block is gold ore:
+                        drop {_drops} of raw gold with lore "&f&lCOMMON" at event-block
+                        set {_value} to 5
+                        addExp(player, {_drops} * {_value})
+                    if event-block is raw gold block:
+                        drop round({_drops} / 2) of raw gold block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 10
+                        addExp(player, {_drops} * {_value})
+                    set event-block to air
+                    stop
+                else:
+                    send "{@red}ERROR: You need to have a pickaxe with breaking power 3 for this ore!" to player
+            if event-block is diamond ore or diamond block or emerald ore or emerald block:
+                if {_p} >= 4:
+                    add 1 to {playerData::%player's uuid%::blocksMined}
+                    if event-block is diamond ore:
+                        drop {_drops} of diamond with lore "&f&lCOMMON" at event-block
+                        set {_value} to 10
+                        addExp(player, {_drops} * {_value})
+                    if event-block is diamond block:
+                        drop round({_drops} / 2) of diamond block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 20
+                        addExp(player, {_drops} * {_value})
+                    if event-block is emerald ore:
+                        drop {_drops} of emerald with lore "&f&lCOMMON" at event-block
+                        set {_value} to 10
+                        addExp(player, {_drops} * {_value})
+                    if event-block is emerald block:
+                        drop round({_drops} / 2) of emerald block with lore "&f&lCOMMON" at event-block
+                        set {_value} to 20
+                        addExp(player, {_drops} * {_value})
+                    set event-block to air
+                    stop
+                else:
+                    send "{@red}ERROR: You need to have a pickaxe with breaking power 4 for this ore!" to player
+            if event-block is amethyst block:
+                if {_p} >= 5:
+                    uncancel event
+                else:
+                    send "{@red}ERROR: You need to have a pickaxe with breaking power 5 for this ore!" to player
+        if toolCheck(player) = "shovel":
+            if event-block is sand:
+                if {_p} >= 1:
+                    add 1 to {playerData::%player's uuid%::blocksMined}
+                    if event-block is sand:
+                        drop {_drops} of cobblestone with lore "&f&lCOMMON" at the block above event-block
+                    set the event-block to bedrock
+                    wait 5 seconds
+                    set the event-block to sand
+                    stop
+                else:
+                    send "{@red}ERROR: You need to have a shovel with breaking power 1 for this ore!" to player
+        if toolCheck(player) = "air":
+            if event-block is sand:
+                add 1 to {playerData::%player's uuid%::blocksMined}
+                drop {_drops} of glowstone dust named "&fHandful of Sand" with lore "&f&lCOMMON" at the block above event-block
+                set the event-block to bedrock
+                wait 5 seconds
+                set the event-block to sand
+                stop
+
+function stoneMine1():
+    loop all blocks in region "stone_mine1":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2 or 3 or 4:
+                set loop-block to cobblestone
+            else:
+                set loop-block to stone
+function stoneMine2():
+    loop all blocks in region "stone_mine2":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2 or 3 or 4:
+                set loop-block to cobblestone
+            else:
+                set loop-block to stone
+function coalMine():
+    loop all blocks in region "coal_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to coal block
+            else:
+                set loop-block to coal ore
+function copperMine():
+    loop all blocks in region "copper_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to raw copper block
+            else:
+                set loop-block to copper ore
+function ironMine():
+    loop all blocks in region "iron_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to raw iron block
+            else:
+                set loop-block to iron ore
+function lapisMine():
+    loop all blocks in region "lapis_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to lapis block
+            else:
+                set loop-block to lapis ore
+function redstoneMine():
+    loop all blocks in region "redstone_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to redstone block
+            else:
+                set loop-block to redstone ore
+function goldMine():
+    loop all blocks in region "gold_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to raw gold block
+            else:
+                set loop-block to gold ore
+function emeraldMine():
+    loop all blocks in region "emerald_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to emerald block
+            else:
+                set loop-block to emerald ore
+function diamondMine():
+    loop all blocks in region "diamond_mine":
+        if loop-block is air:
+            set {_A} to a random integer from 1 to 10
+            if {_a} is 1 or 2:
+                set loop-block to diamond block
+            else:
+                set loop-block to diamond ore
+
+function resetMines():
+    stoneMine1()
+    stoneMine2()
+    coalMine()
+    copperMine()
+    ironMine()
+    lapisMine()
+    redstoneMine()
+    goldMine()
+    emeraldMine()
+    diamondMine()
+
+every 60 seconds:
+    resetMines()
