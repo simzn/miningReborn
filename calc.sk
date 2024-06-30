@@ -1,0 +1,18 @@
+options:
+    red: <##fa9189>
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##d6f6ff>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+
+on load:
+   execute console command "bc Reloaded calc.sk"
+
+
+function calc(attStat: num, wepDmg: num, deffStat: num, lvl: num, strengthBoost: num) :: num:
+    set {_rand} to a random number from 90 to 100
+    set {_a} to (((((2 * {_lvl} / 5 + 2) * {_attStat} * {_wepDmg} / {_deffStat}) / 50) + 2) * {_rand} / 100)
+    return ceil({_a})

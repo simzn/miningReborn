@@ -1,0 +1,115 @@
+
+
+options:
+    red: <##fa9189>
+    orange: <##fcae7c>
+    yellow1: <##ffe699>
+    yellow2: <##f9ffb5>
+    green: <##b3f5bc>
+    blue: <##d6f6ff>
+    purple1: <##e2cbf7>
+    purple2: <##d1bdff>
+
+on load:
+   execute console command "bc Reloaded mob.sk"
+
+command /mobspawn <string>:
+    trigger:
+        set {_pos} to location of the player
+        if arg-1 is "WOLF_ONE":
+            spawnMob("wolf1", {_pos})
+        if arg-1 is "WOLF_TWO":
+            spawnMob("wolf2", {_pos})
+        if arg-1 is "WOLF_THREE" or "PACK_LEADER":
+            spawnMob("wolf3", {_pos})
+
+function spawnMob(mobType: string, pos: location):
+    if {_mobType} = "wolf1":
+        spawn wolf at {_pos}
+        set {_mob} to last spawned wolf
+        set metadata value "wolf1" of {_mob} to true
+        set metadata value "wepDmg" of {_mob} to 5
+        set metadata value "deffStat" of {_mob} to 3
+        set metadata value "attStat" of {_mob} to 3
+        set metadata value "lvl" of {_mob} to 1
+        set the max health of {_mob} to 12.5
+        heal {_mob}
+        set the display name of {_mob} to "&8[&7Lv1&8] &cWolf &a25&f/&a25&c♥"
+    if {_mobType} = "wolf2":
+        spawn wolf at {_pos}
+        set {_mob} to last spawned wolf
+        set metadata value "wolf2" of {_mob} to true
+        set metadata value "wepDmg" of {_mob} to 10
+        set metadata value "deffStat" of {_mob} to 5
+        set metadata value "attStat" of {_mob} to 5
+        set metadata value "lvl" of {_mob} to 3
+        set the max health of {_mob} to 25
+        heal {_mob}
+        set the display name of {_mob} to "&8[&7Lv3&8] &cWolf &a50&f/&a50&c♥"
+    if {_mobType} = "wolf3":
+        spawn wolf at {_pos}
+        set {_mob} to last spawned wolf
+        set metadata value "wolf3" of {_mob} to true
+        set metadata value "wepDmg" of {_mob} to 15
+        set metadata value "deffStat" of {_mob} to 10
+        set metadata value "attStat" of {_mob} to 10
+        set metadata value "lvl" of {_mob} to 5
+        set the max health of {_mob} to 50
+        heal {_mob}
+        set the display name of {_mob} to "&8[&7Lv1&8] &cPack Leader &a100&f/&a100&c♥"
+
+function updateHealth(mob: entity):
+    if {_mob} is alive:
+        set {_a} to the health of {_mob}
+        set {_b} to ({_a} * 2)
+        if {_mob} has metadata value "wolf1": 
+            set the display name of {_mob} to "&8[&7Lv1&8] &cWolf &a%{_b}%&f/&a25&c♥"
+        if {_mob} has metadata value "wolf2": 
+            set the display name of {_mob} to "&8[&7Lv3&8] &cWolf &a%{_b}%&f/&a50&c♥"
+        if {_mob} has metadata value "wolf3": 
+            set the display name of {_mob} to "&8[&7Lv5&8] &cPack Leader &a%{_b}%&f/&a100&c♥"
+    
+
+on damage:
+    if victim is not a player:
+        if attacker is a player:
+            cancel event
+            if {playerData::%attacker's uuid%::cooldown} > 0:
+                stop
+            set {_deff} to metadata value "deffStat" of victim
+            set {_a} to "%nbt compound from attacker's tool%"
+            if {_a} contains "type:""DAGGER""":
+                set {playerData::%attacker's uuid%::cooldown} to 0.5
+            if {_a} contains "type:""SWORD""":
+                set {playerData::%attacker's uuid%::cooldown} to 1
+            if {_a} contains "type:""AXE""":
+                set {playerData::%attacker's uuid%::cooldown} to 1.5
+            set {_a} to calc({playerData::%attacker's uuid%::stats::attack}, {playerData::%attacker's uuid%::stats::wepDmg}, {_deff}, {playerData::%attacker's uuid%::stats::level}, 1)
+            damage victim by {_a}
+            set {_pos} to location of victim
+            dmgNumber({_a} * 2, {_pos})
+        updateHealth(victim)
+        set the target of victim to attacker
+    if victim is a player:
+        if attacker is not a player:
+            if attacker is alive:
+                cancel event
+                set {_att} to metadata value "attStat" of attacker
+                set {_wep} to metadata value "wepDmg" of attacker
+                set {_deff} to {playerData::%victim's uuid%::stats::defense}
+                set {_lvl} to metadata value "lvl" of attacker
+                damage victim by calc({_tt}, {_wep}, {_deff}, {_lvl}, 1)
+
+function dmgNumber(int: integer, pos: location):
+    loop all armor stands in radius 1 around {_pos}:
+        if metadata value "dmg" of loop-armor stand is true:
+            kill loop-armor stand
+    set {_holo} to "&7%{_int}%"
+    spawn an armor stand 1 block below {_pos} with nbt from "{NoGravity:1b, Invisible:1b}"
+    set the display name of last spawned armor stand to {_holo}
+    set metadata value "dmg" of last spawned armor stand to true
+    wait 1 second
+    kill last spawned armor stand
+    loop all armor stands in radius 1 around {_pos}:
+        if metadata value "dmg" of loop-armor stand is true:
+            kill loop-armor stand

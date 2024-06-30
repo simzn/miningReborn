@@ -1,0 +1,19 @@
+Damage = ((((2 * Level / 5 + 2) * AttackStat * AttackPower / DefenseStat) / 50) + 2) * RandomNumber / 100
+
+exp: attack stat of 5, sword damage of 5, defense of 5, level 1
+
+(2*1/5 + 2) * 5 * 5 / 5) + 2) * 1
+
+2.4) * 25/5) + 2)
+
+2.4 * 5 = 12 
+
+12+2 = 14 (highest roll)
+
+14 * .85 = 12 (lowest roll)
+
+# https://www.serebii.net/games/damage.shtml 
+
+
+
+
